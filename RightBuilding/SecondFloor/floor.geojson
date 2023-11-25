@@ -1,0 +1,32 @@
+{
+    "type": "FeatureCollection",
+    "generator": "smartcity",
+    "copyright": "Smartcity",
+    "timestamp": "2021-05-27T09:28:58Z",
+    "features": [
+      {
+          "type": "Feature",
+          "properties": {
+            "Building name": "floor",
+            "height": 0.25,
+            "width": 9.5,
+            "color": "#FF7F24"
+          },
+          "geometry": {
+              "type": "MultiPolygon",
+              "coordinates": [
+                
+                  [
+                      [
+                          [106.6994687461864, 10.779628126329207, 25.65],
+                          [106.69940532710247, 10.779685229128862, 25.65],
+                          [106.69934822430281, 10.779621810044933, 25.65],
+                          [106.69941164338674, 10.779564707245278, 25.65], 
+                          [106.6994687461864, 10.779628126329207, 25.65]
+                      ]
+                  ]
+              ]
+            }
+        }
+    ]
+}
