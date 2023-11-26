@@ -541,24 +541,51 @@
         // DỊCH CHUYỂN NHIỀU ĐIỂM
         function DichChuyenCoordinates() {
           const coordinates = [
-          [106.6993576970704, 10.77950479379121, 32.04895190973189],
-                        [106.69935763117213, 10.779504720603773, 31.999905051668584],
-                        [106.69935758391529, 10.779504668119738, 31.95026658685145],
-                        [106.69935755548639, 10.779504636546237, 31.900232415623456],
-                        [106.6993575459976,  10.779504626007872, 31.850000000000005],
-                        [106.6993575459966,  10.779504626008872, 33.15],
-                        [106.6993576970694,  10.77950479379221, 33.15],
-                        [106.6993576970704,  10.77950479379121, 32.04895190973189]
+          
+          
+          
+          
+          [
+          106.69912395068648,
+          10.77995671338264,
+          24.4
+      ],
+      [
+          106.6990908911709,
+          10.779919997070893,
+          27.9
+      ],
+      [
+          106.69905751270566,
+          10.779950051175975,
+          27.9
+      ],
+      [
+          106.69909057222125,
+          10.779986767487722,
+          24.4
+      ],
+      [
+          106.69912395068648,
+          10.77995671338264,
+          24.4
+      ]
+
+
+
+
+
+
           ];
           let result = [];
           coordinates.forEach((coordinate) => {
-            result.push(dichChuyenDiem(coordinate, 2.25, 0, -90));
+            result.push(dichChuyenDiem(coordinate, 5, 138, 0));
           });
           console.log("Tọa độ các điểm sau dịch chuyển:");
           console.log(result);
         }
 
-        // DichChuyenCoordinates();
+        DichChuyenCoordinates();
 
         // ĐỐI XỨNG NHIỀU ĐIỂM QUA MẶT PHẲNG
         function DoiXungCoordinates() {
@@ -578,7 +605,7 @@
           console.log(result);
         }
 
-        DoiXungCoordinates();
+       // DoiXungCoordinates();
 
         function plus() {
           const plusX = -0.00000000001
@@ -1054,7 +1081,30 @@
           },
       };
 
+      let CenterBuildingFirstFloorRoof = new GeoJSONLayer({
+        url: './CenterBuilding/FirstFloor/roof.geojson'
+      });
+
+      CenterBuildingFirstFloorRoof.renderer = {
+        type: "simple",
+        symbol: {
+            type: "polygon-3d",
+            symbolLayers: [
+              {
+                type: "extrude",
+                size: 0.1,
+                material: {
+                  // color: [139, 69, 19, 0.9]
+                  color: [205, 102, 29, 1]
+                }
+              }
+            ]
+          }
+      };
+
         map.layers.add(CenterBuildingFirstFloorWall);
+        map.layers.add(CenterBuildingFirstFloorRoof);
+
       // ==== End First Floor ==================
 
       // ==== Second Floor =====================
