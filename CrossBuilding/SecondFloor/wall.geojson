@@ -1,0 +1,49 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [106.6991391617454, 10.779960182045746, 24.9],
+              [106.69921593221542, 10.779891057604058, 24.9],
+              [106.69921593221642, 10.779891057605058, 39.9],
+              [106.6991391617464, 10.779960182046746, 39.9]
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "Name": "Cross building second floor wall"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [106.69891772309917, 10.779714249513978, 24.9],
+              [106.6989944935692, 10.779645125072292, 24.9],
+              [106.6989944935683, 10.779645125071198, 39.9],
+              [106.69891772309829, 10.779714249512883, 39.9]
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "Name": "Cross building second floor wall"
+      }
+    }
+  ],
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  }
+}
