@@ -1,1037 +1,999 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Roof 3D</title>
-    <link
-      rel="stylesheet"
-      href="https://js.arcgis.com/4.16/esri/themes/light/main.css"
-    />
-    <script src="https://js.arcgis.com/4.16/"></script>
-    <link rel="stylesheet" href="./style.css" />
-  </head>
-  <body>
-    <div id="container">
-      <div id="viewDiv"></div>
-      <div id="toolDiv">
-        <div class="form-container">
-          <div class="btn">Tính khoảng cách 2 điểm</div>
-          <!-- <form action=""></form> -->
-          <form id="form1" class="form hidden">
-            <label for="point1">A(x,y)</label>
-            <input type="text" id="point1" name="point1" placeholder="x,y" />
 
-            <label for="point2">B(x,y)</label>
-            <input type="text" id="point2" name="point2" placeholder="x,y" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roof 3D</title>
+  <link rel="stylesheet" href="https://js.arcgis.com/4.16/esri/themes/light/main.css" />
+  <script src="https://js.arcgis.com/4.16/"></script>
+  <link rel="stylesheet" href="./style.css" />
+</head>
 
-            <label for="result1">Kết quả:</label>
-            <div id="result1"></div>
+<body>
+  <div id="container">
+    <div id="viewDiv"></div>
+    <div id="toolDiv">
+      <div class="form-container">
+        <div class="btn">Tính khoảng cách 2 điểm</div>
+        <!-- <form action=""></form> -->
+        <form id="form1" class="form hidden">
+          <label for="point1">A(x,y)</label>
+          <input type="text" id="point1" name="point1" placeholder="x,y" />
 
-            <input class="submit-btn" type="submit" value="Submit" />
-          </form>
-        </div>
+          <label for="point2">B(x,y)</label>
+          <input type="text" id="point2" name="point2" placeholder="x,y" />
 
-        <div class="form-container">
-          <div class="btn">Hiển thị điểm trên map</div>
-          <!-- <form action=""></form> -->
-          <form id="form2" class="form hidden">
-            <label for="point">A(x,y,z)</label>
-            <input type="text" id="point" name="point" placeholder="x,y,z" />
-            <input class="submit-btn" type="submit" value="Submit" />
-          </form>
-        </div>
+          <label for="result1">Kết quả:</label>
+          <div id="result1"></div>
 
-        <div class="form-container">
-          <div class="btn">Dịch chuyển điểm</div>
-          <form id="form3" class="form hidden">
-            <label for="point3">A(x,y,z)</label>
-            <input type="text" id="point3" name="point3" placeholder="x,y,z" />
+          <input class="submit-btn" type="submit" value="Submit" />
+        </form>
+      </div>
 
-            <label for="dist">Khoảng cách</label>
-            <input type="text" id="dist" name="dist" placeholder="x,y,z" />
+      <div class="form-container">
+        <div class="btn">Hiển thị điểm trên map</div>
+        <!-- <form action=""></form> -->
+        <form id="form2" class="form hidden">
+          <label for="point">A(x,y,z)</label>
+          <input type="text" id="point" name="point" placeholder="x,y,z" />
+          <input class="submit-btn" type="submit" value="Submit" />
+        </form>
+      </div>
 
-            <label for="angle3">Góc xoay trên mặt phẳng 2D</label>
-            <input
-              type="text"
-              id="angle31"
-              name="angle31"
-              placeholder="x,y,z"
-            />
+      <div class="form-container">
+        <div class="btn">Dịch chuyển điểm</div>
+        <form id="form3" class="form hidden">
+          <label for="point3">A(x,y,z)</label>
+          <input type="text" id="point3" name="point3" placeholder="x,y,z" />
 
-            <label for="angle3">Góc xoay theo trục z</label>
-            <input
-              type="text"
-              id="angle32"
-              name="angle32"
-              placeholder="x,y,z"
-            />
-            <button id="delete3">Xóa điểm vừa tạo</button>
+          <label for="dist">Khoảng cách</label>
+          <input type="text" id="dist" name="dist" placeholder="x,y,z" />
 
-            <input class="submit-btn" type="submit" value="Submit" />
-          </form>
-        </div>
-        <div class="form-container">
-          <div class="btn">Tìm điểm đối xứng qua mặt phẳng</div>
-          <!-- <form action=""></form> -->
-          <form id="form4" class="form hidden">
-            <label for="rings">Điểm A</label>
-            <input
-              type="text"
-              id="rings"
-              name="rings"
-              placeholder="x,y,z],[x1,y1,z1"
-            />
+          <label for="angle3">Góc xoay trên mặt phẳng 2D</label>
+          <input type="text" id="angle31" name="angle31" placeholder="x,y,z" />
 
-            <input class="submit-btn" type="submit" value="Submit" />
-          </form>
-        </div>
+          <label for="angle3">Góc xoay theo trục z</label>
+          <input type="text" id="angle32" name="angle32" placeholder="x,y,z" />
+          <button id="delete3">Xóa điểm vừa tạo</button>
 
-        <div class="form-container">
-          <div class="btn">Hiển thị đường trên map</div>
-          <!-- <form action=""></form> -->
-          <form id="form5" class="form hidden">
-            <label for="line">paths: x1,y1,z1;x2,y2,z2;x3,y3,z3</label>
-            <input
-              type="text"
-              id="line"
-              name="line"
-              placeholder="Nhập đúng cấu trúc trên mới ra"
-            />
-            <input class="submit-btn" type="submit" value="Submit" />
-          </form>
-        </div>
+          <input class="submit-btn" type="submit" value="Submit" />
+        </form>
+      </div>
+      <div class="form-container">
+        <div class="btn">Tìm điểm đối xứng qua mặt phẳng</div>
+        <!-- <form action=""></form> -->
+        <form id="form4" class="form hidden">
+          <label for="rings">Điểm A</label>
+          <input type="text" id="rings" name="rings" placeholder="x,y,z],[x1,y1,z1" />
 
-        <div class="form-container">
-          <div class="btn">Vẽ hình tròn</div>
-          <!-- <form action=""></form> -->
-          <form id="form6" class="form hidden">
-            <label for="centerP">Tâm đường tròn:</label>
-            <input
-              type="text"
-              id="centerP"
-              name="centerP"
-              placeholder="x,y,z"
-            />
+          <input class="submit-btn" type="submit" value="Submit" />
+        </form>
+      </div>
 
-            <label for="radius">Bán kính (m):</label>
-            <input type="text" id="radius" name="radius" placeholder="r (m)" />
+      <div class="form-container">
+        <div class="btn">Hiển thị đường trên map</div>
+        <!-- <form action=""></form> -->
+        <form id="form5" class="form hidden">
+          <label for="line">paths: x1,y1,z1;x2,y2,z2;x3,y3,z3</label>
+          <input type="text" id="line" name="line" placeholder="Nhập đúng cấu trúc trên mới ra" />
+          <input class="submit-btn" type="submit" value="Submit" />
+        </form>
+      </div>
 
-            <label for="rotation">Góc xoay hợp với Oxy (độ):</label>
-            <input
-              type="text"
-              id="rotation"
-              name="rotation"
-              placeholder="180"
-            />
+      <div class="form-container">
+        <div class="btn">Vẽ hình tròn</div>
+        <!-- <form action=""></form> -->
+        <form id="form6" class="form hidden">
+          <label for="centerP">Tâm đường tròn:</label>
+          <input type="text" id="centerP" name="centerP" placeholder="x,y,z" />
 
-            <label for="rotation1">Góc xoay đường tròn</label>
-            <input
-              type="text"
-              id="rotation1"
-              name="rotation1"
-              placeholder="180"
-            />
+          <label for="radius">Bán kính (m):</label>
+          <input type="text" id="radius" name="radius" placeholder="r (m)" />
 
-            <input class="submit-btn" type="submit" value="Submit" />
-          </form>
-        </div>
+          <label for="rotation">Góc xoay hợp với Oxy (độ):</label>
+          <input type="text" id="rotation" name="rotation" placeholder="180" />
+
+          <label for="rotation1">Góc xoay đường tròn</label>
+          <input type="text" id="rotation1" name="rotation1" placeholder="180" />
+
+          <input class="submit-btn" type="submit" value="Submit" />
+        </form>
       </div>
     </div>
-    <script src="./toolEvent.js"></script>
-    <script>
-      var map;
-      var list_points = [];
-      var string_points = "";
-      function copyTextToClipboard(text) {
-        if (!navigator.clipboard) {
-          fallbackCopyTextToClipboard(text);
-          return;
+  </div>
+  <script src="./toolEvent.js"></script>
+  <script>
+    var map;
+    var list_points = [];
+    var string_points = "";
+    function copyTextToClipboard(text) {
+      if (!navigator.clipboard) {
+        fallbackCopyTextToClipboard(text);
+        return;
+      }
+      navigator.clipboard.writeText(text).then(
+        function () {
+          console.log("Async: Copying to clipboard was successful!");
+        },
+        function (err) {
+          console.error("Async: Could not copy text: ", err);
         }
-        navigator.clipboard.writeText(text).then(
-          function () {
-            console.log("Async: Copying to clipboard was successful!");
+      );
+    }
+
+    require([
+      "esri/Map",
+      "esri/views/SceneView",
+      "esri/geometry/Point",
+      "esri/geometry/Polyline",
+      "esri/Graphic",
+      "esri/symbols/PictureMarkerSymbol",
+      "esri/layers/FeatureLayer",
+      "esri/geometry/SpatialReference",
+      "esri/tasks/GeometryService",
+      "esri/tasks/support/DistanceParameters",
+      "esri/geometry/support/geodesicUtils",
+      "esri/layers/GeoJSONLayer",
+      "esri/layers/GraphicsLayer",
+      "esri/request",
+      "esri/geometry/Mesh",
+      "esri/widgets/Sketch/SketchViewModel"
+    ], function (
+      Map,
+      SceneView,
+      Point,
+      Polyline,
+      Graphic,
+      PictureMarkerSymbol,
+      FeatureLayer,
+      SpatialReference,
+      GeometryService,
+      DistanceParameters,
+      geodesicUtils,
+      GeoJSONLayer,
+      GraphicsLayer,
+      esriRequest,
+      Mesh,
+      SketchViewModel
+    ) {
+      const map = new Map({
+        basemap: "topo-vector",
+        ground: "world-elevation",
+      });
+
+      const view = new SceneView({
+        container: "viewDiv",
+        map: map,
+        camera: {
+          // position: [106.70098190805595, 10.777971245189503, 500],
+          position: [106.6996954326568, 10.779257243511426, 200],
+          //   heading: -45, // góc xoay của camera hướng về đông tây nam bắc
+          //   tilt: 28 // góc camera hợp với đường thẳng vuông góc với mặt đất
+          heading: -45,
+          titl: 0,
+        },
+      });
+
+      var graphicsLayer = new GraphicsLayer();
+
+      var createGraphic = function (data) {
+        return new Graphic({
+          geometry: data,
+          symbol: data.symbol,
+          attributes: {
+            name: "polygon",
           },
-          function (err) {
-            console.error("Async: Could not copy text: ", err);
-          }
-        );
+          attributes: data.attributes,
+          popupTemplate: {
+            title: "{name}",
+            content: [
+              {
+                type: "fields",
+                fieldInfos: [
+                  { fieldName: "name", label: "name" },
+                  { fieldName: "Do dai", label: "Độ dài(m)" },
+                  { fieldName: "Member", label: "Thành viên" },
+                ],
+              },
+            ],
+          },
+        });
+      };
+
+      const json_options = {
+        query: {
+          f: "json",
+        },
+        responseType: "json",
+      };
+      // request json
+      esriRequest("./face.json", json_options).then(function (response) {
+        console.log(response);
+        response.data.forEach(function (data) {
+          // console.log(data);
+          graphicsLayer.add(createGraphic(data));
+        });
+        map.add(graphicsLayer);
+      });
+
+      geometryService = new GeometryService(
+        "https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer"
+      );
+      function calcDistanceOfTwoPoint(x1, y1, x2, y2) {
+        console.log(x1, " | ", y1, " | ", x2, " | ", y2, " | ");
+        let meter_value;
+        // var pt1 = new Point(x1, y1, new SpatialReference({ wkid: 4326 }));
+        // var pt2 = new Point(x2, y2, new SpatialReference({ wkid: 4326 }));
+        // // Define points for measurement
+        // var firstPoint = new Point({
+        //   longitude: x1,
+        //   latitude: y1,
+        // });
+        // var otherPoint = new Point({
+        //   longitude: x2,
+        //   latitude: y2,
+        // });
+
+        // // Measure distance and output result to console log
+        // var distanceUnits = "meters";
+        // var distanceResult = geodesicUtils.geodesicDistance(
+        //   firstPoint,
+        //   otherPoint,
+        //   distanceUnits
+        // );
+        // console.log("hey i'm here ", distanceResult.distance, distanceUnits);
+        // return distanceResult.distance;
+
+        meter_value = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2)) * 111321
+        return meter_value
       }
 
-      require([
-        "esri/Map",
-        "esri/views/SceneView",
-        "esri/geometry/Point",
-        "esri/geometry/Polyline",
-        "esri/Graphic",
-        "esri/symbols/PictureMarkerSymbol",
-        "esri/layers/FeatureLayer",
-        "esri/geometry/SpatialReference",
-        "esri/tasks/GeometryService",
-        "esri/tasks/support/DistanceParameters",
-        "esri/geometry/support/geodesicUtils",
-        "esri/layers/GeoJSONLayer",
-        "esri/layers/GraphicsLayer",
-        "esri/request",
-        "esri/geometry/Mesh",
-        "esri/widgets/Sketch/SketchViewModel"
-      ], function (
-        Map,
-        SceneView,
-        Point,
-        Polyline,
-        Graphic,
-        PictureMarkerSymbol,
-        FeatureLayer,
-        SpatialReference,
-        GeometryService,
-        DistanceParameters,
-        geodesicUtils,
-        GeoJSONLayer,
-        GraphicsLayer,
-        esriRequest,
-        Mesh,
-        SketchViewModel
-      ) {
-        const map = new Map({
-          basemap: "topo-vector",
-          ground: "world-elevation",
+      let point = {
+        type: "point",
+        x: 105.14813632186537,
+        y: 10.704784801285976,
+        z: 30,
+      };
+      const markerSymbol = {
+        type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+        color: [226, 119, 40],
+        outline: {
+          // autocasts as new SimpleLineSymbol()
+          color: [255, 255, 255],
+          width: 1,
+        },
+      };
+
+      function addPoint(x, y, z) {
+        console.log("add point: [", x, ",", y, ",", z, "]");
+        point.x = x;
+        point.y = y;
+        point.z = z;
+        const pointGraphic = new Graphic({
+          geometry: point,
+          symbol: markerSymbol,
+        });
+        alert(x + ", " + y + ", " + z);
+        view.graphics.add(pointGraphic);
+      }
+
+      function addLine(CoordinatesStr) {
+        var pathStrings = CoordinatesStr.split(";");
+
+        var paths = pathStrings.map(function (pathString) {
+          // Thêm dấu `[` và `]` vào đầu và cuối chuỗi
+          let coordinates = pathString
+            .split(",")
+            .map((item) => parseFloat(item.trim()));
+          return coordinates;
         });
 
-        const view = new SceneView({
-          container: "viewDiv",
-          map: map,
-          camera: {
-            // position: [106.70098190805595, 10.777971245189503, 500],
-            position: [106.6996954326568, 10.779257243511426, 200],
-            //   heading: -45, // góc xoay của camera hướng về đông tây nam bắc
-            //   tilt: 28 // góc camera hợp với đường thẳng vuông góc với mặt đất
-            heading: -45,
-            titl: 0,
-          },
-        });
+        console.log(paths);
 
-        var graphicsLayer = new GraphicsLayer();
-
-        var createGraphic = function (data) {
-          return new Graphic({
-            geometry: data,
-            symbol: data.symbol,
-            attributes: {
-              name: "polygon",
-            },
-            attributes: data.attributes,
-            popupTemplate: {
-              title: "{name}",
-              content: [
-                {
-                  type: "fields",
-                  fieldInfos: [
-                    { fieldName: "name", label: "name" },
-                    { fieldName: "Do dai", label: "Độ dài(m)" },
-                    { fieldName: "Member", label: "Thành viên" },
-                  ],
-                },
-              ],
-            },
-          });
-        };
-
-        const json_options = {
-          query: {
-            f: "json",
-          },
-          responseType: "json",
-        };
-        // request json
-        esriRequest("./face.json", json_options).then(function (response) {
-          console.log(response);
-          response.data.forEach(function (data) {
-            // console.log(data);
-            graphicsLayer.add(createGraphic(data));
-          });
-          map.add(graphicsLayer);
-        });
-
-        geometryService = new GeometryService(
-          "https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer"
-        );
-        function calcDistanceOfTwoPoint(x1, y1, x2, y2) {
-          console.log(x1, " | ", y1, " | ", x2, " | ", y2, " | ");
-          let meter_value;
-          // var pt1 = new Point(x1, y1, new SpatialReference({ wkid: 4326 }));
-          // var pt2 = new Point(x2, y2, new SpatialReference({ wkid: 4326 }));
-          // // Define points for measurement
-          // var firstPoint = new Point({
-          //   longitude: x1,
-          //   latitude: y1,
-          // });
-          // var otherPoint = new Point({
-          //   longitude: x2,
-          //   latitude: y2,
-          // });
-
-          // // Measure distance and output result to console log
-          // var distanceUnits = "meters";
-          // var distanceResult = geodesicUtils.geodesicDistance(
-          //   firstPoint,
-          //   otherPoint,
-          //   distanceUnits
-          // );
-          // console.log("hey i'm here ", distanceResult.distance, distanceUnits);
-          // return distanceResult.distance;
-
-          meter_value = Math.sqrt(Math.pow(x1-x2,2) + Math.pow(y1-y2, 2)) * 111321
-          return meter_value
-        }
-
-        let point = {
-          type: "point",
-          x: 105.14813632186537,
-          y: 10.704784801285976,
-          z: 30,
-        };
-        const markerSymbol = {
-          type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
-          color: [226, 119, 40],
-          outline: {
-            // autocasts as new SimpleLineSymbol()
-            color: [255, 255, 255],
-            width: 1,
+        var polyline = {
+          type: "polyline",
+          paths: paths,
+          symbol: {
+            type: "simple-line",
+            color: [226, 119, 40],
+            width: 4,
           },
         };
 
-        function addPoint(x, y, z) {
-          console.log("add point: [", x, ",", y, ",", z, "]");
-          point.x = x;
-          point.y = y;
-          point.z = z;
-          const pointGraphic = new Graphic({
-            geometry: point,
-            symbol: markerSymbol,
-          });
-          alert(x + ", " + y + ", " + z);
-          view.graphics.add(pointGraphic);
-        }
+        let lineGraphic = new Graphic({
+          geometry: polyline,
+        });
+        view.graphics.add(lineGraphic);
+      }
 
-        function addLine(CoordinatesStr) {
-          var pathStrings = CoordinatesStr.split(";");
+      let form1 = document.getElementById("form1");
+      form1.addEventListener("submit", function (event) {
+        // Prevent form from actually submitting to a server
+        event.preventDefault();
+        let p1Str = document.getElementById("point1").value;
+        let p2Str = document.getElementById("point2").value;
 
-          var paths = pathStrings.map(function (pathString) {
-            // Thêm dấu `[` và `]` vào đầu và cuối chuỗi
-            let coordinates = pathString
-              .split(",")
-              .map((item) => parseFloat(item.trim()));
-            return coordinates;
-          });
+        let p1Arr = p1Str.split(",").map((item) => parseFloat(item.trim()));
+        let p2Arr = p2Str.split(",").map((item) => parseFloat(item.trim()));
 
-          console.log(paths);
+        let x1 = p1Arr[0];
+        let y1 = p1Arr[1];
 
-          var polyline = {
-            type: "polyline",
-            paths: paths,
-            symbol: {
-              type: "simple-line",
-              color: [226, 119, 40],
-              width: 4,
-            },
+        let x2 = p2Arr[0];
+        let y2 = p2Arr[1];
+
+        let result = calcDistanceOfTwoPoint(x1, y1, x2, y2);
+        console.log("result: ", result);
+        let result1 = document.getElementById("result1");
+        result1.innerHTML = result.toString();
+      });
+
+      let form2 = document.getElementById("form2");
+
+      form2.addEventListener("submit", function (event) {
+        // Prevent form from actually submitting to a server
+        event.preventDefault();
+        let pStr = document.getElementById("point").value;
+
+        let pArr = pStr.split(",").map((item) => parseFloat(item.trim()));
+
+        console.log(pArr);
+        let x = pArr[0];
+        let y = pArr[1];
+        let z = pArr[2];
+
+        addPoint(x, y, z);
+      });
+
+      function dichChuyenDiem(p3Arr, dist, angle31, angle32) {
+        var radiusZ = parseFloat(dist);
+        var radiusXY = radiusZ / 111321;
+        let angleXY = (Math.PI * parseFloat(angle31)) / 180;
+        let angleZ = (Math.PI * parseFloat(angle32)) / 180;
+
+        var dx = radiusXY * Math.cos(angleZ) * Math.cos(angleXY);
+        var dy = radiusXY * Math.cos(angleZ) * Math.sin(angleXY);
+        var dz = radiusZ * Math.sin(angleZ);
+
+        let B = [p3Arr[0] + dx, p3Arr[1] + dy, p3Arr[2] + dz];
+        return B;
+      }
+
+      let form3 = document.getElementById("form3");
+      form3.addEventListener("submit", function (event) {
+        // Prevent form from actually submitting to a server
+        event.preventDefault();
+        let p3Str = document.getElementById("point3").value;
+        let dist = document.getElementById("dist").value;
+        let angle31 = document.getElementById("angle31").value;
+        let angle32 = document.getElementById("angle32").value;
+
+        let p3Arr = p3Str.split(",").map((item) => parseFloat(item.trim()));
+        console.log("p3Atrr", p3Arr);
+        let B = dichChuyenDiem(p3Arr, dist, angle31, angle32);
+        console.log("Diem dich chuyen");
+        addPoint(B[0], B[1], B[2]);
+      });
+
+      let form4 = document.getElementById("form4");
+
+      form4.addEventListener("submit", function (event) {
+        // Prevent form from actually submitting to a server
+        event.preventDefault();
+        let pStr = document.getElementById("rings").value;
+
+        let pArr = pStr.split(",").map((item) => parseFloat(item.trim()));
+
+        console.log(pArr);
+
+        console.log("Diem doi xung");
+        let B = timDiemDX(pArr, [106.6993842568616, 10.779516839019685, 17]);
+        addPoint(B[0], B[1], B[2]);
+      });
+
+      let form5 = document.getElementById("form5");
+
+      form5.addEventListener("submit", function (event) {
+        // Prevent form from actually submitting to a server
+        event.preventDefault();
+        let coordinatesStr = document.getElementById("line").value;
+        addLine(coordinatesStr);
+      });
+
+      // Vẽ hình tròn
+      document
+        .getElementById("form6")
+        .addEventListener("submit", function (event) {
+          // Prevent form from actually submitting to a server
+          event.preventDefault();
+
+          // Retrieve values from the form
+          let centerP = document.getElementById("centerP").value;
+          let radius = document.getElementById("radius").value;
+          let rotation = document.getElementById("rotation").value;
+          let rotation1 = document.getElementById("rotation1").value;
+
+          // Define the circle's center and radius
+          // var center = [106.69937279830634, 10.779509830106498, 50];
+          let center = centerP.split(",").map(parseFloat);
+          var radiusZ = parseFloat(radius); // in decimal degrees
+          var radiusXY = radiusZ / 111321;
+          var rotationN = parseFloat(rotation);
+          //1 độ vĩ ≈ 111.32km
+
+          // Calculate the circle's coordinates
+          var circlePoints = [];
+          let i;
+
+          for (i = 0; i < rotation1; i += 3.6) {
+            var angle = (Math.PI * i) / 180;
+            var dx =
+              radiusXY *
+              Math.cos(angle) *
+              Math.cos((Math.PI * rotationN) / 180);
+            var dy =
+              radiusXY *
+              Math.cos(angle) *
+              Math.sin((Math.PI * rotationN) / 180);
+            var dz = radiusZ * Math.sin(angle);
+            var doLech = 0.00000000001 / i;
+            circlePoints.push([
+              center[0] + dx,
+              center[1] + dy,
+              center[2] + dz,
+            ]); // 100 meters above the ground
+          }
+
+          circlePoints.push(circlePoints[0]); // Close the circle
+
+          console.log(circlePoints);
+
+          var circlePolygon = {
+            type: "polygon",
+            rings: [circlePoints],
+            spatialReference: { wkid: 4326 },
           };
 
-          let lineGraphic = new Graphic({
-            geometry: polyline,
-          });
-          view.graphics.add(lineGraphic);
-        }
-
-        let form1 = document.getElementById("form1");
-        form1.addEventListener("submit", function (event) {
-          // Prevent form from actually submitting to a server
-          event.preventDefault();
-          let p1Str = document.getElementById("point1").value;
-          let p2Str = document.getElementById("point2").value;
-
-          let p1Arr = p1Str.split(",").map((item) => parseFloat(item.trim()));
-          let p2Arr = p2Str.split(",").map((item) => parseFloat(item.trim()));
-
-          let x1 = p1Arr[0];
-          let y1 = p1Arr[1];
-
-          let x2 = p2Arr[0];
-          let y2 = p2Arr[1];
-
-          let result = calcDistanceOfTwoPoint(x1, y1, x2, y2);
-          console.log("result: ", result);
-          let result1 = document.getElementById("result1");
-          result1.innerHTML = result.toString();
-        });
-
-        let form2 = document.getElementById("form2");
-
-        form2.addEventListener("submit", function (event) {
-          // Prevent form from actually submitting to a server
-          event.preventDefault();
-          let pStr = document.getElementById("point").value;
-
-          let pArr = pStr.split(",").map((item) => parseFloat(item.trim()));
-
-          console.log(pArr);
-          let x = pArr[0];
-          let y = pArr[1];
-          let z = pArr[2];
-
-          addPoint(x, y, z);
-        });
-
-        function dichChuyenDiem(p3Arr, dist, angle31, angle32) {
-          var radiusZ = parseFloat(dist);
-          var radiusXY = radiusZ / 111321;
-          let angleXY = (Math.PI * parseFloat(angle31)) / 180;
-          let angleZ = (Math.PI * parseFloat(angle32)) / 180;
-
-          var dx = radiusXY * Math.cos(angleZ) * Math.cos(angleXY);
-          var dy = radiusXY * Math.cos(angleZ) * Math.sin(angleXY);
-          var dz = radiusZ * Math.sin(angleZ);
-
-          let B = [p3Arr[0] + dx, p3Arr[1] + dy, p3Arr[2] + dz];
-          return B;
-        }
-
-        let form3 = document.getElementById("form3");
-        form3.addEventListener("submit", function (event) {
-          // Prevent form from actually submitting to a server
-          event.preventDefault();
-          let p3Str = document.getElementById("point3").value;
-          let dist = document.getElementById("dist").value;
-          let angle31 = document.getElementById("angle31").value;
-          let angle32 = document.getElementById("angle32").value;
-
-          let p3Arr = p3Str.split(",").map((item) => parseFloat(item.trim()));
-          console.log("p3Atrr", p3Arr);
-          let B = dichChuyenDiem(p3Arr, dist, angle31, angle32);
-          console.log("Diem dich chuyen");
-          addPoint(B[0], B[1], B[2]);
-        });
-
-        let form4 = document.getElementById("form4");
-
-        form4.addEventListener("submit", function (event) {
-          // Prevent form from actually submitting to a server
-          event.preventDefault();
-          let pStr = document.getElementById("rings").value;
-
-          let pArr = pStr.split(",").map((item) => parseFloat(item.trim()));
-
-          console.log(pArr);
-
-          console.log("Diem doi xung");
-          let B = timDiemDX(pArr, [106.6993842568616, 10.779516839019685, 17]);
-          addPoint(B[0], B[1], B[2]);
-        });
-
-        let form5 = document.getElementById("form5");
-
-        form5.addEventListener("submit", function (event) {
-          // Prevent form from actually submitting to a server
-          event.preventDefault();
-          let coordinatesStr = document.getElementById("line").value;
-          addLine(coordinatesStr);
-        });
-
-        // Vẽ hình tròn
-        document
-          .getElementById("form6")
-          .addEventListener("submit", function (event) {
-            // Prevent form from actually submitting to a server
-            event.preventDefault();
-
-            // Retrieve values from the form
-            let centerP = document.getElementById("centerP").value;
-            let radius = document.getElementById("radius").value;
-            let rotation = document.getElementById("rotation").value;
-            let rotation1 = document.getElementById("rotation1").value;
-
-            // Define the circle's center and radius
-            // var center = [106.69937279830634, 10.779509830106498, 50];
-            let center = centerP.split(",").map(parseFloat);
-            var radiusZ = parseFloat(radius); // in decimal degrees
-            var radiusXY = radiusZ / 111321;
-            var rotationN = parseFloat(rotation);
-            //1 độ vĩ ≈ 111.32km
-
-            // Calculate the circle's coordinates
-            var circlePoints = [];
-            let i;
-
-            for (i = 0; i < rotation1; i += 3.6) {
-              var angle = (Math.PI * i) / 180;
-              var dx =
-                radiusXY *
-                Math.cos(angle) *
-                Math.cos((Math.PI * rotationN) / 180);
-              var dy =
-                radiusXY *
-                Math.cos(angle) *
-                Math.sin((Math.PI * rotationN) / 180);
-              var dz = radiusZ * Math.sin(angle);
-              var doLech = 0.00000000001 / i;
-              circlePoints.push([
-                center[0] + dx,
-                center[1] + dy,
-                center[2] + dz,
-              ]); // 100 meters above the ground
-            }           
-
-            circlePoints.push(circlePoints[0]); // Close the circle
-
-            console.log(circlePoints);
-
-            var circlePolygon = {
-              type: "polygon",
-              rings: [circlePoints],
-              spatialReference: { wkid: 4326 },
-            };
-
-            var circleGraphic = new Graphic({
-              geometry: circlePolygon,
-              symbol: {
-                type: "simple-fill",
-                color: [51, 255, 51, 0.8],
-                outline: {
-                  color: [0, 0, 255, 1],
-                  width: 2,
-                },
+          var circleGraphic = new Graphic({
+            geometry: circlePolygon,
+            symbol: {
+              type: "simple-fill",
+              color: [51, 255, 51, 0.8],
+              outline: {
+                color: [0, 0, 255, 1],
+                width: 2,
               },
-            });
-
-            graphicsLayer.add(circleGraphic);
+            },
           });
 
-        // Hàm tìm điểm đối xứng qua mặt phẳng
-        // A là điểm càn tìm điểm đối xứng, O là điểm nằm trong mp đó
-        function timDiemDX(A, O) {
-          // tìm các tham số Rxy, Rz, cosZ, cos(XY), sin ... theo hướng từ O đến A
-          var dx = A[0] - O[0];
-          var dy = A[1] - O[1];
-          var dz = A[2] - O[2];
+          graphicsLayer.add(circleGraphic);
+        });
 
-          var SqrRxyCosZ = dx * dx + dy * dy;
-          var SqrRxySinZ = Math.pow(dz / 111321, 2);
-          var Rxy = Math.sqrt(SqrRxySinZ + SqrRxyCosZ);
+      // Hàm tìm điểm đối xứng qua mặt phẳng
+      // A là điểm càn tìm điểm đối xứng, O là điểm nằm trong mp đó
+      function timDiemDX(A, O) {
+        // tìm các tham số Rxy, Rz, cosZ, cos(XY), sin ... theo hướng từ O đến A
+        var dx = A[0] - O[0];
+        var dy = A[1] - O[1];
+        var dz = A[2] - O[2];
 
-          var sinZ = dz / (111321 * Rxy);
-          var cosZ = Math.sqrt(1 - sinZ * sinZ);
+        var SqrRxyCosZ = dx * dx + dy * dy;
+        var SqrRxySinZ = Math.pow(dz / 111321, 2);
+        var Rxy = Math.sqrt(SqrRxySinZ + SqrRxyCosZ);
 
-          var cosXY = dx / (Rxy * cosZ);
-          var sinXY = dy / (Rxy * cosZ);
+        var sinZ = dz / (111321 * Rxy);
+        var cosZ = Math.sqrt(1 - sinZ * sinZ);
 
-          var gocXY = Math.acos(cosXY);
-          var gocXY1 = (2 * 138 * Math.PI) / 180 - gocXY;
+        var cosXY = dx / (Rxy * cosZ);
+        var sinXY = dy / (Rxy * cosZ);
 
-          var cosXY1 = Math.cos(gocXY1);
-          var sinXY1 = Math.sin(gocXY1);
+        var gocXY = Math.acos(cosXY);
+        var gocXY1 = (2 * 138 * Math.PI) / 180 - gocXY;
 
-          var dx1 = Rxy * cosZ * cosXY1;
-          var dy1 = Rxy * cosZ * sinXY1;
-          var dz1 = 111321 * Rxy * sinZ;
+        var cosXY1 = Math.cos(gocXY1);
+        var sinXY1 = Math.sin(gocXY1);
 
-          var B = [O[0] + dx1, O[1] + dy1, O[2] + dz1];
-          return B;
-        }
+        var dx1 = Rxy * cosZ * cosXY1;
+        var dy1 = Rxy * cosZ * sinXY1;
+        var dz1 = 111321 * Rxy * sinZ;
 
-        // DỊCH CHUYỂN NHIỀU ĐIỂM
-        function DichChuyenCoordinates() {
-          const coordinates = [
+        var B = [O[0] + dx1, O[1] + dy1, O[2] + dz1];
+        return B;
+      }
+
+      // DỊCH CHUYỂN NHIỀU ĐIỂM
+      function DichChuyenCoordinates() {
+        const coordinates = [
           [106.6993576970704, 10.77950479379121, 32.04895190973189],
-                        [106.69935763117213, 10.779504720603773, 31.999905051668584],
-                        [106.69935758391529, 10.779504668119738, 31.95026658685145],
-                        [106.69935755548639, 10.779504636546237, 31.900232415623456],
-                        [106.6993575459976,  10.779504626007872, 31.850000000000005],
-                        [106.6993575459966,  10.779504626008872, 33.15],
-                        [106.6993576970694,  10.77950479379221, 33.15],
-                        [106.6993576970704,  10.77950479379121, 32.04895190973189]
-          ];
-          let result = [];
-          coordinates.forEach((coordinate) => {
-            result.push(dichChuyenDiem(coordinate, 2.25, 0, -90));
-          });
-          console.log("Tọa độ các điểm sau dịch chuyển:");
-          console.log(result);
-        }
-
-        // DichChuyenCoordinates();
-
-        // ĐỐI XỨNG NHIỀU ĐIỂM QUA MẶT PHẲNG
-        function DoiXungCoordinates() {
-          const coordinates = [
-          [106.69941164337574, 10.779564707256278, 30.9],
-                        [106.699395414159, 10.779546682885055, 30.9],
-                        [106.699395414160, 10.779546682886055, 39.9],
-                        [106.69941164337674, 10.779564707257278, 39.9]
-                          ]
-          let result = [];
-          coordinates.forEach((coordinate) => {
-            result.push(
-              timDiemDX(coordinate, [106.6993842568616, 10.779516839019685, 17])
-            );
-          });
-          console.log("Tọa độ các điểm đối xứng:");
-          console.log(result);
-        }
-
-        DoiXungCoordinates();
-
-        function plus() {
-          const plusX = -0.00000000001
-          const plusY = -0.00000000001
-          const plusZ = 0
-          const daonguoc = false
-          const coordinates = [
-          
-          ];
-          let result = [];
-          let limit = coordinates.length
-          if(daonguoc)
-          {
-            for (let i = limit-1; i >= 0; i--) {
-                result.push(
-                  [coordinates[i][0]+plusX, coordinates[i][1]+plusY, coordinates[i][2]+plusZ]
-                );
-            }
-          }
-          else
-          {
-            for (let i = 0; i < coordinates.length; i++) {
-                result.push(
-                  [coordinates[i][0]+plusX, coordinates[i][1]+plusY, coordinates[i][2]+plusZ]
-                );
-            }
-          }
-          console.log("Tọa độ các điểm sau khi cộng:");
-          console.log(result);
-        }
-
-        // plus()
-
-        // Lấy path:
-        // Tạo một đối tượng XMLHttpRequest
-        // var xhr1 = new XMLHttpRequest();
-        let data;
-        // Thiết lập phương thức và URL cho yêu cầu
-        let prop = [
-          {
-            name: "wall",
-            color: "#FF7F24",
-          },
-          {
-            name: "hightRoof",
-            color: "#EEEEE0",
-          },
-          {
-            name: "lowRoof",
-            color: "#8B4513",
-          },
-          {
-            name: "window",
-            color: "#EEEEE0",
-          },
+          [106.69935763117213, 10.779504720603773, 31.999905051668584],
+          [106.69935758391529, 10.779504668119738, 31.95026658685145],
+          [106.69935755548639, 10.779504636546237, 31.900232415623456],
+          [106.6993575459976, 10.779504626007872, 31.850000000000005],
+          [106.6993575459966, 10.779504626008872, 33.15],
+          [106.6993576970694, 10.77950479379221, 33.15],
+          [106.6993576970704, 10.77950479379121, 32.04895190973189]
         ];
-
-        // xhr1.open("GET", "http://localhost:3000/api/bodycomp/path/all", true);
-
-        // // Định nghĩa hàm xử lý sự kiện khi yêu cầu hoàn thành
-        // xhr1.onload = function () {
-        //   if (xhr1.status >= 200 && xhr1.status < 300) {
-        //     // Xử lý dữ liệu từ API
-        //     data = JSON.parse(xhr1.responseText);
-        //     // console.log(data);
-        //     data.map((url) => {
-        //       let geojsonLayer1 = new GeoJSONLayer({
-        //         url: "http://localhost:3000/api/bodycomp/path?path=" + url,
-        //       });
-        //       let obj = prop.find((obj) => url.includes(obj.name));
-        //       geojsonLayer1.renderer = {
-        //         type: "simple", // Sử dụng renderer đơn giản
-        //         symbol: {
-        //           type: "simple-fill", // Sử dụng symbol đơn giản là simple-fill
-        //           outline: {
-        //             color: [0, 0, 0, 0.8], // Màu đường viền (nếu cần)
-        //             width: 1, // Độ dày của đường viền (nếu cần)
-        //           },
-        //           color: obj.color, // Màu nền của polygon
-        //         },
-        //       };
-
-        //       // map.layers.add(geojsonLayer1);
-        //     });
-        //   } else {
-        //     console.error("Lỗi khi truy cập API: " + xhr1.status);
-        //   }
-        // };
-
-        // // Xử lý lỗi kết nối
-        // xhr1.onerror = function () {
-        //   console.error("Lỗi kết nối đến API.");
-        // };
-
-        // // Gửi yêu cầu
-        // xhr1.send();
-
-        // var xhr2 = new XMLHttpRequest();
-        // xhr2.open("GET", "http://localhost:3000/api/cylinder", true);
-
-        // // Định nghĩa hàm xử lý sự kiện khi yêu cầu hoàn thành
-        // xhr2.onload = function () {
-        //   if (xhr2.status >= 200 && xhr2.status < 300) {
-        //     // Xử lý dữ liệu từ API
-        //     data = JSON.parse(xhr2.responseText);
-        //     // console.log(data);
-        //     data.map((featureCollection) => {
-        //       let geojsonLayer1 = new GeoJSONLayer({
-        //         url: "http://localhost:3000/api/cylinder/path?path=" + featureCollection.features[0].properties.Path,
-        //       });
-
-        //       geojsonLayer1.renderer = {
-        //         type: "simple",
-        //         symbol: {
-        //           type: "polygon-3d",
-        //           symbolLayers: [
-        //             {
-        //               type: "extrude",
-        //               size: featureCollection.features[0].properties.Height,
-        //               material: {
-        //                 color: "#EE7621"
-        //               }
-        //             }
-        //           ]
-        //         }
-        //       };
-
-        //       // map.layers.add(geojsonLayer1);
-        //     });
-        //   } else {
-        //     console.error("Lỗi khi truy cập API: " + xhr2.status);
-        //   }
-        // };
-
-        // // Xử lý lỗi kết nối
-        // xhr2.onerror = function () {
-        //   console.error("Lỗi kết nối đến API.");
-        // };
-
-        // // Gửi yêu cầu
-        // xhr2.send();
-
-        let geojsonLayer1 = new GeoJSONLayer({
-          url: './wall.geojson'
+        let result = [];
+        coordinates.forEach((coordinate) => {
+          result.push(dichChuyenDiem(coordinate, 2.25, 0, -90));
         });
+        console.log("Tọa độ các điểm sau dịch chuyển:");
+        console.log(result);
+      }
 
-        geojsonLayer1.renderer = {
-          type: "simple",
-          symbol: {
-            type: "simple-fill", // Sử dụng symbol đơn giản là simple-fill
-            outline: {
-              color: [0, 0, 0, 0.8], // Màu đường viền (nếu cần)
-              width: 1, // Độ dày của đường viền (nếu cần)
-            },
-            // color: [255, 127, 36, 0.9]
-            // color: [255, 165, 79, 0.9]
-            // color: [238, 118, 33, 0.9]
-            color: [255, 127, 0, 0.9]
+      // DichChuyenCoordinates();
+
+      // ĐỐI XỨNG NHIỀU ĐIỂM QUA MẶT PHẲNG
+      function DoiXungCoordinates() {
+        const coordinates = [
+          [106.69941164337574, 10.779564707256278, 30.9],
+          [106.699395414159, 10.779546682885055, 30.9],
+          [106.699395414160, 10.779546682886055, 39.9],
+          [106.69941164337674, 10.779564707257278, 39.9]
+        ]
+        let result = [];
+        coordinates.forEach((coordinate) => {
+          result.push(
+            timDiemDX(coordinate, [106.6993842568616, 10.779516839019685, 17])
+          );
+        });
+        console.log("Tọa độ các điểm đối xứng:");
+        console.log(result);
+      }
+
+      DoiXungCoordinates();
+
+      function plus() {
+        const plusX = -0.00000000001
+        const plusY = -0.00000000001
+        const plusZ = 0
+        const daonguoc = false
+        const coordinates = [
+
+        ];
+        let result = [];
+        let limit = coordinates.length
+        if (daonguoc) {
+          for (let i = limit - 1; i >= 0; i--) {
+            result.push(
+              [coordinates[i][0] + plusX, coordinates[i][1] + plusY, coordinates[i][2] + plusZ]
+            );
+          }
+        }
+        else {
+          for (let i = 0; i < coordinates.length; i++) {
+            result.push(
+              [coordinates[i][0] + plusX, coordinates[i][1] + plusY, coordinates[i][2] + plusZ]
+            );
+          }
+        }
+        console.log("Tọa độ các điểm sau khi cộng:");
+        console.log(result);
+      }
+
+      // plus()
+
+      // Lấy path:
+      // Tạo một đối tượng XMLHttpRequest
+      // var xhr1 = new XMLHttpRequest();
+      let data;
+      // Thiết lập phương thức và URL cho yêu cầu
+      let prop = [
+        {
+          name: "wall",
+          color: "#FF7F24",
+        },
+        {
+          name: "hightRoof",
+          color: "#EEEEE0",
+        },
+        {
+          name: "lowRoof",
+          color: "#8B4513",
+        },
+        {
+          name: "window",
+          color: "#EEEEE0",
+        },
+      ];
+
+      // xhr1.open("GET", "http://localhost:3000/api/bodycomp/path/all", true);
+
+      // // Định nghĩa hàm xử lý sự kiện khi yêu cầu hoàn thành
+      // xhr1.onload = function () {
+      //   if (xhr1.status >= 200 && xhr1.status < 300) {
+      //     // Xử lý dữ liệu từ API
+      //     data = JSON.parse(xhr1.responseText);
+      //     // console.log(data);
+      //     data.map((url) => {
+      //       let geojsonLayer1 = new GeoJSONLayer({
+      //         url: "http://localhost:3000/api/bodycomp/path?path=" + url,
+      //       });
+      //       let obj = prop.find((obj) => url.includes(obj.name));
+      //       geojsonLayer1.renderer = {
+      //         type: "simple", // Sử dụng renderer đơn giản
+      //         symbol: {
+      //           type: "simple-fill", // Sử dụng symbol đơn giản là simple-fill
+      //           outline: {
+      //             color: [0, 0, 0, 0.8], // Màu đường viền (nếu cần)
+      //             width: 1, // Độ dày của đường viền (nếu cần)
+      //           },
+      //           color: obj.color, // Màu nền của polygon
+      //         },
+      //       };
+
+      //       // map.layers.add(geojsonLayer1);
+      //     });
+      //   } else {
+      //     console.error("Lỗi khi truy cập API: " + xhr1.status);
+      //   }
+      // };
+
+      // // Xử lý lỗi kết nối
+      // xhr1.onerror = function () {
+      //   console.error("Lỗi kết nối đến API.");
+      // };
+
+      // // Gửi yêu cầu
+      // xhr1.send();
+
+      // var xhr2 = new XMLHttpRequest();
+      // xhr2.open("GET", "http://localhost:3000/api/cylinder", true);
+
+      // // Định nghĩa hàm xử lý sự kiện khi yêu cầu hoàn thành
+      // xhr2.onload = function () {
+      //   if (xhr2.status >= 200 && xhr2.status < 300) {
+      //     // Xử lý dữ liệu từ API
+      //     data = JSON.parse(xhr2.responseText);
+      //     // console.log(data);
+      //     data.map((featureCollection) => {
+      //       let geojsonLayer1 = new GeoJSONLayer({
+      //         url: "http://localhost:3000/api/cylinder/path?path=" + featureCollection.features[0].properties.Path,
+      //       });
+
+      //       geojsonLayer1.renderer = {
+      //         type: "simple",
+      //         symbol: {
+      //           type: "polygon-3d",
+      //           symbolLayers: [
+      //             {
+      //               type: "extrude",
+      //               size: featureCollection.features[0].properties.Height,
+      //               material: {
+      //                 color: "#EE7621"
+      //               }
+      //             }
+      //           ]
+      //         }
+      //       };
+
+      //       // map.layers.add(geojsonLayer1);
+      //     });
+      //   } else {
+      //     console.error("Lỗi khi truy cập API: " + xhr2.status);
+      //   }
+      // };
+
+      // // Xử lý lỗi kết nối
+      // xhr2.onerror = function () {
+      //   console.error("Lỗi kết nối đến API.");
+      // };
+
+      // // Gửi yêu cầu
+      // xhr2.send();
+
+      let geojsonLayer1 = new GeoJSONLayer({
+        url: './wall.geojson'
+      });
+
+      geojsonLayer1.renderer = {
+        type: "simple",
+        symbol: {
+          type: "simple-fill", // Sử dụng symbol đơn giản là simple-fill
+          outline: {
+            color: [0, 0, 0, 0.8], // Màu đường viền (nếu cần)
+            width: 1, // Độ dày của đường viền (nếu cần)
           },
-        };
+          // color: [255, 127, 36, 0.9]
+          // color: [255, 165, 79, 0.9]
+          // color: [238, 118, 33, 0.9]
+          color: [255, 127, 0, 0.9]
+        },
+      };
 
-        let geojsonLayer2 = new GeoJSONLayer({
-          url: './roof.geojson'
-        });
+      let geojsonLayer2 = new GeoJSONLayer({
+        url: './roof.geojson'
+      });
 
-        geojsonLayer2.renderer = {
-          type: "simple",
-          symbol: {
-              type: "polygon-3d",
-              symbolLayers: [
-                {
-                  type: "extrude",
-                  size: 0.1,
-                  material: {
-                    // color: [139, 69, 19, 0.9]
-                    color: [205, 102, 29, 1]
-                  }
-                }
-              ]
-            }
-        };
-
-        let geojsonLayer3 = new GeoJSONLayer({
-          url: './column.geojson'
-        });
-
-        geojsonLayer3.renderer = {
-          type: "simple",
-          symbol: {
-              type: "polygon-3d",
-              symbolLayers: [
-                {
-                  type: "extrude",
-                  material: {
-                    // color: "#7eadf7"
-                    // color: [255, 127, 36, 1]
-                    // color: [238, 154, 73, 0.9]
-                    // color: [255, 165, 79, 1]
-                    // color: [238, 154, 0, 1]
-                    color: [250, 250, 210, 1]
-                  }
-                }
-              ]
-            },
-          visualVariables: [
-              {
-                type: "size",
-                field: "height",
+      geojsonLayer2.renderer = {
+        type: "simple",
+        symbol: {
+          type: "polygon-3d",
+          symbolLayers: [
+            {
+              type: "extrude",
+              size: 0.1,
+              material: {
+                // color: [139, 69, 19, 0.9]
+                color: [205, 102, 29, 1]
               }
+            }
           ]
-        };
+        }
+      };
 
+      let geojsonLayer3 = new GeoJSONLayer({
+        url: './column.geojson'
+      });
 
-        let geojsonLayer4 = new GeoJSONLayer({
-          url: './roofDecor.geojson'
-        });
-
-        geojsonLayer4.renderer = {
-            type: "simple",
-            symbol: {
-              type: "polygon-3d",
-              symbolLayers: [
-                {
-                  type: "extrude",
-                  size: 0.2,
-                  material: {
-                    color: [230, 230, 250, 0.9]
-                  }
-                }
-              ]
+      geojsonLayer3.renderer = {
+        type: "simple",
+        symbol: {
+          type: "polygon-3d",
+          symbolLayers: [
+            {
+              type: "extrude",
+              material: {
+                // color: "#7eadf7"
+                // color: [255, 127, 36, 1]
+                // color: [238, 154, 73, 0.9]
+                // color: [255, 165, 79, 1]
+                // color: [238, 154, 0, 1]
+                color: [250, 250, 210, 1]
+              }
             }
-        };
+          ]
+        },
+        visualVariables: [
+          {
+            type: "size",
+            field: "height",
+          }
+        ]
+      };
 
-        let geojsonLayer5 = new GeoJSONLayer({
-          url: './wallDecor.geojson'
-        });
 
-        geojsonLayer5.renderer = {
-            type: "simple",
-            symbol: {
-              type: "polygon-3d",
-              symbolLayers: [
-                {
-                  type: "extrude",
-                  size: 0.2,
-                  material: {
-                    color: [230, 230, 250, 1]
-                  }
-                }
-              ]
+      let geojsonLayer4 = new GeoJSONLayer({
+        url: './roofDecor.geojson'
+      });
+
+      geojsonLayer4.renderer = {
+        type: "simple",
+        symbol: {
+          type: "polygon-3d",
+          symbolLayers: [
+            {
+              type: "extrude",
+              size: 0.2,
+              material: {
+                color: [230, 230, 250, 0.9]
+              }
             }
-        };
+          ]
+        }
+      };
+
+      let geojsonLayer5 = new GeoJSONLayer({
+        url: './wallDecor.geojson'
+      });
+
+      geojsonLayer5.renderer = {
+        type: "simple",
+        symbol: {
+          type: "polygon-3d",
+          symbolLayers: [
+            {
+              type: "extrude",
+              size: 0.2,
+              material: {
+                color: [230, 230, 250, 1]
+              }
+            }
+          ]
+        }
+      };
 
 
-        map.layers.add(geojsonLayer1);
-        map.layers.add(geojsonLayer2);
-        map.layers.add(geojsonLayer3);
-        map.layers.add(geojsonLayer4);
-        map.layers.add(geojsonLayer5);
-// ==========================================
+      map.layers.add(geojsonLayer1);
+      map.layers.add(geojsonLayer2);
+      map.layers.add(geojsonLayer3);
+      map.layers.add(geojsonLayer4);
+      map.layers.add(geojsonLayer5);
+      // ==========================================
 
       const circleDecorLocation = new Point({
-          x: 106.69937557844965, 
-          y: 10.779524653098006,
-          z: 34.45
+        x: 106.69937557844965,
+        y: 10.779524653098006,
+        z: 34.45
       });
 
       const graphic = new Graphic({
-          geometry: circleDecorLocation,
-          symbol: {
-            type: "point-3d",
-            symbolLayers: [
-              {
-                type: "object",
-                resource: { href: "./Model/decorCircle.glb" },
-                height: 6.6,  // Set the height of the object,
-                heading: 42,  // Set the heading (rotation around the z-axis) in degrees
-                tilt: 0,     // Set the tilt (rotation around the x-axis) in degrees
-                roll: 180     // Set the roll (rotation around the y-axis) in degrees
-              }
-            ]
-          }
+        geometry: circleDecorLocation,
+        symbol: {
+          type: "point-3d",
+          symbolLayers: [
+            {
+              type: "object",
+              resource: { href: "./Model/decorCircle.glb" },
+              height: 6.6,  // Set the height of the object,
+              heading: 42,  // Set the heading (rotation around the z-axis) in degrees
+              tilt: 0,     // Set the tilt (rotation around the x-axis) in degrees
+              roll: 180     // Set the roll (rotation around the y-axis) in degrees
+            }
+          ]
+        }
       });
 
       view.graphics.add(graphic);
 
       const clockLocation = new Point({
-          x: 106.69937557846065,
-          y: 10.779524653109006,
-          z: 42.2
+        x: 106.69937557846065,
+        y: 10.779524653109006,
+        z: 42.2
       });
 
       const clockGraphic = new Graphic({
-          geometry: clockLocation,
-          symbol: {
-            type: "point-3d",
-            symbolLayers: [
-              {
-                type: "object",
-                resource: { href: "./Model/clock2.glb" },
-                height: 4,  // Set the height of the object,
-                heading: 42,  // Set the heading (rotation around the z-axis) in degrees
-                tilt: 0,     // Set the tilt (rotation around the x-axis) in degrees
-                roll: 0     // Set the roll (rotation around the y-axis) in degrees
-              }
-            ]
-          }
+        geometry: clockLocation,
+        symbol: {
+          type: "point-3d",
+          symbolLayers: [
+            {
+              type: "object",
+              resource: { href: "./Model/clock2.glb" },
+              height: 4,  // Set the height of the object,
+              heading: 42,  // Set the heading (rotation around the z-axis) in degrees
+              tilt: 0,     // Set the tilt (rotation around the x-axis) in degrees
+              roll: 0     // Set the roll (rotation around the y-axis) in degrees
+            }
+          ]
+        }
       });
 
       view.graphics.add(clockGraphic);
-      
+
       // ======================================
-      
+
       // == RIGHT BUILDING ====================
-      
+
       // ==== First Floor ==============
       let RightBuildingFirstFloorWall = new GeoJSONLayer({
-          url: './RightBuilding/FirstFloor/wall.geojson'
+        url: './RightBuilding/FirstFloor/wall.geojson'
       });
 
       RightBuildingFirstFloorWall.renderer = {
-          type: "simple",
-          symbol: {
-              type: "simple-fill", // Sử dụng symbol đơn giản là simple-fill
-              outline: {
-                color: [0, 0, 0, 0.8], // Màu đường viền (nếu cần)
-                width: 1, // Độ dày của đường viền (nếu cần)
-              },
-              color: [255, 127, 0, 0.9]
+        type: "simple",
+        symbol: {
+          type: "simple-fill", // Sử dụng symbol đơn giản là simple-fill
+          outline: {
+            color: [0, 0, 0, 0.8], // Màu đường viền (nếu cần)
+            width: 1, // Độ dày của đường viền (nếu cần)
           },
+          color: [255, 127, 0, 0.9]
+        },
       };
 
       let RightBuildingFirstFloorColumn = new GeoJSONLayer({
-          url: './RightBuilding/FirstFloor/column.geojson'
+        url: './RightBuilding/FirstFloor/column.geojson'
       });
 
       RightBuildingFirstFloorColumn.renderer = {
-          type: "simple",
-          symbol: {
-              type: "polygon-3d",
-              symbolLayers: [
-                {
-                  type: "extrude",
-                  material: {
-                    color: [250, 250, 210, 1]
-                  }
-                }
-              ]
-            },
-          visualVariables: [
-              {
-                type: "size",
-                field: "height",
+        type: "simple",
+        symbol: {
+          type: "polygon-3d",
+          symbolLayers: [
+            {
+              type: "extrude",
+              material: {
+                color: [250, 250, 210, 1]
               }
+            }
           ]
-        };
+        },
+        visualVariables: [
+          {
+            type: "size",
+            field: "height",
+          }
+        ]
+      };
 
-        map.layers.add(RightBuildingFirstFloorWall);
-        map.layers.add(RightBuildingFirstFloorColumn);
+      map.layers.add(RightBuildingFirstFloorWall);
+      map.layers.add(RightBuildingFirstFloorColumn);
 
       // ==== End First Floor ==============
 
       // ==== Second Floor =================
 
       let RightBuildingSecondFloor_FLoor = new GeoJSONLayer({
-          url: './RightBuilding/SecondFloor/floor.geojson'
+        url: './RightBuilding/SecondFloor/floor.geojson'
       });
 
       RightBuildingSecondFloor_FLoor.renderer = {
-          type: "simple",
-          symbol: {
-              type: "polygon-3d",
-              symbolLayers: [
-                {
-                  type: "extrude",
-                  material: {
-                    color: [250, 250, 210, 1]
-                  }
-                }
-              ]
-            },
-          visualVariables: [
-              {
-                type: "size",
-                field: "height",
+        type: "simple",
+        symbol: {
+          type: "polygon-3d",
+          symbolLayers: [
+            {
+              type: "extrude",
+              material: {
+                color: [250, 250, 210, 1]
               }
+            }
           ]
-        };
+        },
+        visualVariables: [
+          {
+            type: "size",
+            field: "height",
+          }
+        ]
+      };
 
-        let RightBuildingSecondFloorWall = new GeoJSONLayer({
-          url: './RightBuilding/SecondFloor/wall.geojson'
+      let RightBuildingSecondFloorWall = new GeoJSONLayer({
+        url: './RightBuilding/SecondFloor/wall.geojson'
       });
 
       RightBuildingSecondFloorWall.renderer = {
-          type: "simple",
-          symbol: {
-              type: "simple-fill", // Sử dụng symbol đơn giản là simple-fill
-              outline: {
-                color: [0, 0, 0, 0.8], // Màu đường viền (nếu cần)
-                width: 1, // Độ dày của đường viền (nếu cần)
-              },
-              color: [255, 127, 0, 0.9]
+        type: "simple",
+        symbol: {
+          type: "simple-fill", // Sử dụng symbol đơn giản là simple-fill
+          outline: {
+            color: [0, 0, 0, 0.8], // Màu đường viền (nếu cần)
+            width: 1, // Độ dày của đường viền (nếu cần)
           },
+          color: [255, 127, 0, 0.9]
+        },
       };
 
-        map.layers.add(RightBuildingSecondFloor_FLoor);
-        map.layers.add(RightBuildingSecondFloorWall);
+      map.layers.add(RightBuildingSecondFloor_FLoor);
+      map.layers.add(RightBuildingSecondFloorWall);
 
       // ==== End Second Floor =================
       // ==== Third Floor =================
       let RightBuildingThirdFloor_FLoor = new GeoJSONLayer({
-          url: './RightBuilding/ThirdFloor/floor.geojson'
+        url: './RightBuilding/ThirdFloor/floor.geojson'
       });
 
       RightBuildingThirdFloor_FLoor.renderer = {
-          type: "simple",
-          symbol: {
-              type: "polygon-3d",
-              symbolLayers: [
-                {
-                  type: "extrude",
-                  material: {
-                    color: [250, 250, 210, 1]
-                  }
-                }
-              ]
-            },
-          visualVariables: [
-              {
-                type: "size",
-                field: "height",
+        type: "simple",
+        symbol: {
+          type: "polygon-3d",
+          symbolLayers: [
+            {
+              type: "extrude",
+              material: {
+                color: [250, 250, 210, 1]
               }
+            }
           ]
-        };
+        },
+        visualVariables: [
+          {
+            type: "size",
+            field: "height",
+          }
+        ]
+      };
 
-        let RightBuildingThirdFloorWall = new GeoJSONLayer({
-          url: './RightBuilding/ThirdFloor/wall.geojson'
+      let RightBuildingThirdFloorWall = new GeoJSONLayer({
+        url: './RightBuilding/ThirdFloor/wall.geojson'
       });
 
       RightBuildingThirdFloorWall.renderer = {
-          type: "simple",
-          symbol: {
-              type: "simple-fill", // Sử dụng symbol đơn giản là simple-fill
-              outline: {
-                color: [0, 0, 0, 0.8], // Màu đường viền (nếu cần)
-                width: 1, // Độ dày của đường viền (nếu cần)
-              },
-              color: [255, 127, 0, 0.9]
+        type: "simple",
+        symbol: {
+          type: "simple-fill", // Sử dụng symbol đơn giản là simple-fill
+          outline: {
+            color: [0, 0, 0, 0.8], // Màu đường viền (nếu cần)
+            width: 1, // Độ dày của đường viền (nếu cần)
           },
+          color: [255, 127, 0, 0.9]
+        },
       };
 
-        map.layers.add(RightBuildingThirdFloor_FLoor);
-        map.layers.add(RightBuildingThirdFloorWall);
+      map.layers.add(RightBuildingThirdFloor_FLoor);
+      map.layers.add(RightBuildingThirdFloorWall);
       // ==== Third Second Floor =================
       // == END RIGHT BUILDING ===================
 
@@ -1039,90 +1001,90 @@
 
       // ==== First Floor =====================
       let CenterBuildingFirstFloorWall = new GeoJSONLayer({
-          url: './CenterBuilding/FirstFloor/wall.geojson'
+        url: './CenterBuilding/FirstFloor/wall.geojson'
       });
 
       CenterBuildingFirstFloorWall.renderer = {
-          type: "simple",
-          symbol: {
-              type: "simple-fill", // Sử dụng symbol đơn giản là simple-fill
-              outline: {
-                color: [0, 0, 0, 0.8], // Màu đường viền (nếu cần)
-                width: 1, // Độ dày của đường viền (nếu cần)
-              },
-              color: [255, 127, 0, 0.9]
+        type: "simple",
+        symbol: {
+          type: "simple-fill", // Sử dụng symbol đơn giản là simple-fill
+          outline: {
+            color: [0, 0, 0, 0.8], // Màu đường viền (nếu cần)
+            width: 1, // Độ dày của đường viền (nếu cần)
           },
+          color: [255, 127, 0, 0.9]
+        },
       };
 
-        map.layers.add(CenterBuildingFirstFloorWall);
+      map.layers.add(CenterBuildingFirstFloorWall);
       // ==== End First Floor ==================
 
       // ==== Second Floor =====================
 
       let CenterBuildingSecondFloor_FLoor = new GeoJSONLayer({
-          url: './CenterBuilding/SecondFloor/floor.geojson'
+        url: './CenterBuilding/SecondFloor/floor.geojson'
       });
 
       CenterBuildingSecondFloor_FLoor.renderer = {
-          type: "simple",
-          symbol: {
-              type: "polygon-3d",
-              symbolLayers: [
-                {
-                  type: "extrude",
-                  material: {
-                    color: [250, 250, 210, 1]
-                  }
-                }
-              ]
-            },
-          visualVariables: [
-              {
-                type: "size",
-                field: "height",
+        type: "simple",
+        symbol: {
+          type: "polygon-3d",
+          symbolLayers: [
+            {
+              type: "extrude",
+              material: {
+                color: [250, 250, 210, 1]
               }
+            }
           ]
-        };
+        },
+        visualVariables: [
+          {
+            type: "size",
+            field: "height",
+          }
+        ]
+      };
 
-        let CenterBuildingSecondFloorWall = new GeoJSONLayer({
-          url: './CenterBuilding/SecondFloor/wall.geojson'
-        });
+      let CenterBuildingSecondFloorWall = new GeoJSONLayer({
+        url: './CenterBuilding/SecondFloor/wall.geojson'
+      });
 
-        CenterBuildingSecondFloorWall.renderer = {
-          type: "simple",
-          symbol: {
-            type: "simple-fill", // Sử dụng symbol đơn giản là simple-fill
-            outline: {
-              color: [0, 0, 0, 0.8], // Màu đường viền (nếu cần)
-              width: 1, // Độ dày của đường viền (nếu cần)
-            },
-            color: [255, 127, 0, 0.9]
+      CenterBuildingSecondFloorWall.renderer = {
+        type: "simple",
+        symbol: {
+          type: "simple-fill", // Sử dụng symbol đơn giản là simple-fill
+          outline: {
+            color: [0, 0, 0, 0.8], // Màu đường viền (nếu cần)
+            width: 1, // Độ dày của đường viền (nếu cần)
           },
-        };
-        
-        map.layers.add(CenterBuildingSecondFloor_FLoor);
-        map.layers.add(CenterBuildingSecondFloorWall);
+          color: [255, 127, 0, 0.9]
+        },
+      };
+
+      map.layers.add(CenterBuildingSecondFloor_FLoor);
+      map.layers.add(CenterBuildingSecondFloorWall);
 
       // ==== End Second Floor =================
       // ==== Third Floor =====================
 
       let CenterBuildingThirdFloorWall = new GeoJSONLayer({
-          url: './CenterBuilding/ThirdFloor/wall.geojson'
-        });
+        url: './CenterBuilding/ThirdFloor/wall.geojson'
+      });
 
-        CenterBuildingThirdFloorWall.renderer = {
-          type: "simple",
-          symbol: {
-            type: "simple-fill", // Sử dụng symbol đơn giản là simple-fill
-            outline: {
-              color: [0, 0, 0, 0.8], // Màu đường viền (nếu cần)
-              width: 1, // Độ dày của đường viền (nếu cần)
-            },
-            color: [255, 127, 0, 0.9]
+      CenterBuildingThirdFloorWall.renderer = {
+        type: "simple",
+        symbol: {
+          type: "simple-fill", // Sử dụng symbol đơn giản là simple-fill
+          outline: {
+            color: [0, 0, 0, 0.8], // Màu đường viền (nếu cần)
+            width: 1, // Độ dày của đường viền (nếu cần)
           },
-        };
-        
-        map.layers.add(CenterBuildingThirdFloorWall);
+          color: [255, 127, 0, 0.9]
+        },
+      };
+
+      map.layers.add(CenterBuildingThirdFloorWall);
 
       // ==== End Third Floor =================
       // ======== END CENTER BUILDING =============
@@ -1131,34 +1093,1012 @@
       // ======== END LEFT BUILDING =============
 
       // ======== CROSS BUILDING =============
+      const mainColumns = new GeoJSONLayer({
+        url: './CrossBuilding/Column/mainColumns.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: 'polygon-3d',
+            symbolLayers: [
+              {
+                type: 'extrude',
+                size: 23.5,
+                material: {
+                  color: [250, 250, 210, 1],
+                },
+                edges: {
+                  type: 'solid', // autocasts as new SolidEdges3D()
+                  color: 'transparent',
+                },
+              },
+            ],
+          },
+        },
+      });
+
+      const firstFloorSlope = new GeoJSONLayer({
+        url: './CrossBuilding/Column/firstFloorSlope.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: [250, 250, 210, 1],
+            style: "solid",
+            outline: {  // autocasts as new SimpleLineSymbol()
+              color: "white",
+              width: 0
+            }
+          },
+        },
+      });
+      const secondFloorSlope = new GeoJSONLayer({
+        url: './CrossBuilding/Column/secondFloorSlope.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: [250, 250, 210, 1],
+            style: "solid",
+            outline: {  // autocasts as new SimpleLineSymbol()
+              color: "white",
+              width: 0
+            }
+          },
+        },
+      });
+      const thirdFloorSlope = new GeoJSONLayer({
+        url: './CrossBuilding/Column/thirdFloorSlope.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: [250, 250, 210, 1],
+            style: "solid",
+            outline: {  // autocasts as new SimpleLineSymbol()
+              color: "white",
+              width: 0
+            }
+          },
+        },
+      });
+
+      const firstFloorColumns = new GeoJSONLayer({
+        url: './CrossBuilding/Column/firstFloorColumns.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: 'polygon-3d',
+            symbolLayers: [
+              {
+                type: 'extrude',
+                size: 8,
+                material: {
+                  color: [250, 250, 210, 1],
+                },
+                edges: {
+                  type: 'solid', // autocasts as new SolidEdges3D()
+                  color: 'transparent',
+                },
+              },
+            ],
+
+          },
+        },
+      });
+
+      const secondFloorColumns = new GeoJSONLayer({
+        url: './CrossBuilding/Column/secondFloorColumns.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: 'polygon-3d',
+            symbolLayers: [
+              {
+                type: 'extrude',
+                size: 6.5,
+                material: {
+                  color: [250, 250, 210, 1],
+                },
+                edges: {
+                  type: 'solid', // autocasts as new SolidEdges3D()
+                  color: 'transparent',
+                },
+              },
+            ],
+          },
+        },
+      });
+      const thirdFloorColumns = new GeoJSONLayer({
+        url: './CrossBuilding/Column/thirdFloorColumns.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: 'polygon-3d',
+            symbolLayers: [
+              {
+                type: 'extrude',
+                size: 4.5,
+                material: {
+                  color: [250, 250, 210, 1],
+                },
+                edges: {
+                  type: 'solid', // autocasts as new SolidEdges3D()
+                  color: 'transparent',
+                },
+              },
+            ],
+          },
+        },
+      });
+
+
+      // FirstFloor
+      const frontWall1 = new GeoJSONLayer({
+        url: './CrossBuilding/FirstFloor/frontWall1.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "#b0b0b0",
+            style: "solid",
+            outline: {  // autocasts as new SimpleLineSymbol()
+              width: 0
+            }
+          },
+        },
+      });
+
+
+      const frontWall2 = new GeoJSONLayer({
+        url: './CrossBuilding/FirstFloor/frontWall2.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: [255, 127, 0, 0.9],
+            style: "solid",
+            outline: {  // autocasts as new SimpleLineSymbol()
+              width: 0
+            }
+          },
+        },
+      });
+
+      const halfCircleDoor1A = new GeoJSONLayer({
+        url: './CrossBuilding/FirstFloor/Door/halfCircleDoor1A.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "#c3c3c3",
+            style: "solid",
+            outline: {  // autocasts as new SimpleLineSymbol()
+              width: 0
+            }
+          },
+        },
+      });
+
+      const halfCircleDoor1B = new GeoJSONLayer({
+        url: './CrossBuilding/FirstFloor/Door/halfCircleDoor1B.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "#c3c3c3",
+            style: "solid",
+            outline: {  // autocasts as new SimpleLineSymbol()
+              width: 0
+            }
+          },
+        },
+      });
+      const halfCircleDoor1C = new GeoJSONLayer({
+        url: './CrossBuilding/FirstFloor/Door/halfCircleDoor1C.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "#c3c3c3",
+            style: "solid",
+            outline: {  // autocasts as new SimpleLineSymbol()
+              width: 0
+            }
+          },
+        },
+      });
+
+      const halfCircleDoor1D = new GeoJSONLayer({
+        url: './CrossBuilding/FirstFloor/Door/halfCircleDoor1D.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "#b0b0b0",
+            style: "solid",
+            outline: {  // autocasts as new SimpleLineSymbol()
+              width: 0,
+              color: [255, 0, 0, 1]
+            }
+          },
+        },
+      });
+      const halfCircleDoor1E = new GeoJSONLayer({
+        url: './CrossBuilding/FirstFloor/Door/halfCircleDoor1E.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "#b0b0b0",
+            style: "solid",
+            outline: {  // autocasts as new SimpleLineSymbol()
+              width: 0,
+              color: [255, 255, 255, 1]
+            }
+          },
+        },
+      });
+
+      const halfCircleDoor2A = new GeoJSONLayer({
+        url: './CrossBuilding/FirstFloor/Door/halfCircleDoor2A.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "#c3c3c3",
+            style: "solid",
+            outline: {  // autocasts as new SimpleLineSymbol()
+              width: 0
+            }
+          },
+        },
+      });
+
+      const halfCircleDoor2B = new GeoJSONLayer({
+        url: './CrossBuilding/FirstFloor/Door/halfCircleDoor2B.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "#c3c3c3",
+            style: "solid",
+            outline: {  // autocasts as new SimpleLineSymbol()
+              width: 0
+            }
+          },
+        },
+      });
+      const halfCircleDoor2C = new GeoJSONLayer({
+        url: './CrossBuilding/FirstFloor/Door/halfCircleDoor2C.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "#c3c3c3",
+            style: "solid",
+            outline: {  // autocasts as new SimpleLineSymbol()
+              width: 0
+            }
+          },
+        },
+      });
+
+      const halfCircleDoor2D = new GeoJSONLayer({
+        url: './CrossBuilding/FirstFloor/Door/halfCircleDoor2D.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "#b0b0b0",
+            style: "solid",
+            outline: {  // autocasts as new SimpleLineSymbol()
+              width: 0,
+              color: [255, 255, 255, 1]
+            }
+          },
+        },
+      });
+      const halfCircleDoor2E = new GeoJSONLayer({
+        url: './CrossBuilding/FirstFloor/Door/halfCircleDoor2E.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "#b0b0b0",
+            style: "solid",
+            outline: {  // autocasts as new SimpleLineSymbol()
+              width: 0,
+              color: [255, 255, 255, 1]
+            }
+          },
+        },
+      });
+
+      const halfCircleDoor1Front = new GeoJSONLayer({
+        url: './CrossBuilding/FirstFloor/Door/halfCircleDoor1Front.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",
+            color: [255, 127, 0, 0.9],
+            outline: {
+              color: [0, 0, 255],
+              width: 0
+            }
+          },
+        },
+      });
+      const halfCircleDoor2Front = new GeoJSONLayer({
+        url: './CrossBuilding/FirstFloor/Door/halfCircleDoor2Front.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",
+            color: [255, 127, 0, 0.9],
+            outline: {
+              color: [0, 0, 255],
+              width: 0
+            }
+          },
+        },
+      });
+
+      const frontDoorWall = new GeoJSONLayer({
+        url: './CrossBuilding/FirstFloor/Door/frontDoorWall.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",
+            color: "#beccd5",
+            outline: {
+              color: [255, 255, 255],
+              width: 0
+            }
+          },
+        },
+      });
+      const frontDoors = new GeoJSONLayer({
+        url: './CrossBuilding/FirstFloor/Door/frontDoors.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",
+            color: "#80544a",
+            outline: {
+              color: [255, 255, 255],
+              width: 0
+            }
+          },
+        },
+      });
+      const frontDoorCircle = new GeoJSONLayer({
+        url: './CrossBuilding/FirstFloor/Door/frontDoorCircle.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",
+            color: "#80544a",
+            outline: {
+              color: [255, 0, 0],
+              width: 0
+            }
+          },
+        },
+      });
+
+      const frontColumn = new GeoJSONLayer({
+        url: './CrossBuilding/FirstFloor/Door/frontColumn.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: 'polygon-3d',
+            symbolLayers: [
+              {
+                type: 'extrude',
+                size: 1.5,
+                material: {
+                  color: 'rgba(255,255,255,1)',
+                },
+                edges: {
+                  type: 'solid', // autocasts as new SolidEdges3D()
+                  color: 'transparent',
+                },
+              },
+            ],
+          },
+        },
+      });
+
+
+      const frontColumnB = new GeoJSONLayer({
+        url: './CrossBuilding/FirstFloor/Door/frontColumnB.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: 'polygon-3d',
+            symbolLayers: [
+              {
+                type: 'extrude',
+                size: 3,
+                material: {
+                  color: 'rgba(255,255,255,1)',
+                },
+                edges: {
+                  type: 'solid', // autocasts as new SolidEdges3D()
+                  color: 'transparent',
+                },
+              },
+            ],
+          },
+        },
+      });
+
+      const roundColumn = new GeoJSONLayer({
+        url: './CrossBuilding/FirstFloor/Door/roundColumn.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: 'polygon-3d',
+            symbolLayers: [
+              {
+                type: 'extrude',
+                size: 0.1,
+                material: {
+                  color: 'rgba(255,255,255,1)',
+                },
+                edges: {
+                  type: 'solid', // autocasts as new SolidEdges3D()
+                  color: 'transparent',
+                },
+              },
+            ],
+          },
+        },
+      });
+      const roundColumnB = new GeoJSONLayer({
+        url: './CrossBuilding/FirstFloor/Door/roundColumnB.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: 'polygon-3d',
+            symbolLayers: [
+              {
+                type: 'extrude',
+                size: 2.8,
+                material: {
+                  color: 'rgba(255,255,255,1)',
+                },
+                edges: {
+                  type: 'solid', // autocasts as new SolidEdges3D()
+                  color: 'transparent',
+                },
+              },
+            ],
+          },
+        },
+      });
+
+      // SecondFloor
+
+      const vomDoorA = new GeoJSONLayer({
+        url: './CrossBuilding/SecondFloor/Door/vomDoorA.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",
+            color: "#717161",
+            outline: {
+              color: [0, 0, 255],
+              width: 0
+            }
+          },
+        },
+      });
+      const vomDoorB = new GeoJSONLayer({
+        url: './CrossBuilding/SecondFloor/Door/vomDoorB.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",
+            color: "#717161",
+            outline: {
+              color: [0, 0, 255],
+              width: 0
+            }
+          },
+        },
+      });
+      const vomDoorC = new GeoJSONLayer({
+        url: './CrossBuilding/SecondFloor/Door/vomDoorC.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",
+            color: "#b0b0b0",
+            outline: {
+              color: [255, 255, 255],
+              width: 0
+            }
+          },
+        },
+      });
+
+      const door = new GeoJSONLayer({
+        url: './CrossBuilding/SecondFloor/Door/door.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",
+            color: [0, 0, 0, 0.7],
+            outline: {
+              color: [0, 0, 0, 0.7],
+              width: 0
+            }
+          },
+        },
+      });
+
+
+      const SecondFloorDoorColumns = new GeoJSONLayer({
+        url: './CrossBuilding/SecondFloor/Door/2FDoorColumns.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: 'polygon-3d',
+            symbolLayers: [
+              {
+                type: 'extrude',
+                size: 3.15,
+                material: {
+                  color: '#793c00',
+                },
+                edges: {
+                  type: 'solid', // autocasts as new SolidEdges3D()
+                  color: 'transparent',
+                },
+              },
+            ],
+          },
+        },
+      });
+      const SecondFloorDoorColumns2 = new GeoJSONLayer({
+        url: './CrossBuilding/SecondFloor/Door/2FDoorColumns2.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: 'polygon-3d',
+            symbolLayers: [
+              {
+                type: 'extrude',
+                size: 0.8,
+                material: {
+                  color: 'rgba(255,255,255,1)',
+                },
+                edges: {
+                  type: 'solid', // autocasts as new SolidEdges3D()
+                  color: 'transparent',
+                },
+              },
+            ],
+          },
+        },
+      });
+      const bottomBar = new GeoJSONLayer({
+        url: './CrossBuilding/SecondFloor/Door/bottomBar.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: 'polygon-3d',
+            symbolLayers: [
+              {
+                type: 'extrude',
+                size: 0.1,
+                material: {
+                  color: '#793c00',
+                },
+                edges: {
+                  type: 'solid', // autocasts as new SolidEdges3D()
+                  color: 'transparent',
+                },
+              },
+            ],
+          },
+        },
+      });
+      const secondDoorWall = new GeoJSONLayer({
+        url: './CrossBuilding/SecondFloor/Door/secondDoorWall.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: 'polygon-3d',
+            symbolLayers: [
+              {
+                type: 'extrude',
+                size: 10.6,
+                material: {
+                  color: "#b05700",
+                },
+                edges: {
+                  type: 'solid', // autocasts as new SolidEdges3D()
+                  color: 'transparent',
+                },
+              },
+            ],
+          },
+        },
+      });
+
+      const secondFloorWall = new GeoJSONLayer({
+        url: './CrossBuilding/SecondFloor/wall.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",
+            color: [255, 127, 0, 0.9],
+            outline: {
+              color: [0, 0, 255],
+              width: 0
+            }
+          },
+        },
+      });
+
+      const decoration = new GeoJSONLayer({
+        url: './CrossBuilding/SecondFloor/decoration.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",
+            color: "#b0b0b0",
+            outline: {
+              color: [255, 255, 255],
+              width: 0
+            }
+          },
+        },
+      });
+      const innerCircle = new GeoJSONLayer({
+        url: './CrossBuilding/SecondFloor/innerCircle.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",
+            color: [0, 0, 0, 0.7],
+            outline: {
+              color: [255, 255, 255],
+              width: 0
+            }
+          },
+        },
+      });
+
+      const decorationVanh = new GeoJSONLayer({
+        url: './CrossBuilding/SecondFloor/decorationVanh.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",
+            color: "#b0b0b0",
+            outline: {
+              color: [255, 255, 255],
+              width: 0
+            }
+          },
+        },
+      });
+      const decorationVienNgoai = new GeoJSONLayer({
+        url: './CrossBuilding/SecondFloor/decorationVienNgoai.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",
+            color: "#717161",
+            outline: {
+              color: [255, 255, 255],
+              width: 0
+            }
+          },
+        },
+      });
+      const decorationVienTrong = new GeoJSONLayer({
+        url: './CrossBuilding/SecondFloor/decorationVienTrong.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",
+            color: "#717161",
+            outline: {
+              color: [255, 255, 255],
+              width: 0
+            }
+          },
+        },
+      });
+      const decoration2 = new GeoJSONLayer({
+        url: './CrossBuilding/SecondFloor/decoration2.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",
+            color: "#793c00",
+            outline: {
+              color: [255, 255, 255],
+              width: 0
+            }
+          },
+        },
+      });
+      const decoration2up = new GeoJSONLayer({
+        url: './CrossBuilding/SecondFloor/decoration2up.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",
+            color: "#864200",
+            outline: {
+              color: [255, 255, 255],
+              width: 0
+            }
+          },
+        },
+      });
+      const decoration2down = new GeoJSONLayer({
+        url: './CrossBuilding/SecondFloor/decoration2down.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",
+            color: "#864200",
+            outline: {
+              color: [255, 255, 255],
+              width: 0
+            }
+          },
+        },
+      });
+      const decoration2up2 = new GeoJSONLayer({
+        url: './CrossBuilding/SecondFloor/decoration2up2.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: 'polygon-3d',
+            symbolLayers: [
+              {
+                type: 'extrude',
+                size: 0.2,
+                material: {
+                  color: '#b0b0b0',
+                },
+                edges: {
+                  type: 'solid', // autocasts as new SolidEdges3D()
+                  color: 'transparent',
+                },
+              },
+            ],
+          },
+        },
+      });
+
+      // Other
+      const floor12separator = new GeoJSONLayer({
+        url: './CrossBuilding/floor12separator.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: 'polygon-3d',
+            symbolLayers: [
+              {
+                type: 'extrude',
+                size: 0.4,
+                material: {
+                  color: [250, 250, 210, 1],
+                },
+                edges: {
+                  type: 'solid', // autocasts as new SolidEdges3D()
+                  color: 'transparent',
+                },
+              },
+            ],
+          },
+        },
+      });
+
+
+      // Roof
+      const topFront = new GeoJSONLayer({
+        url: './CrossBuilding/Roof/topFront.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: [255, 127, 0, 0.9],
+            style: "solid",
+            outline: {  // autocasts as new SimpleLineSymbol()
+              color: "white",
+              width: 0
+            }
+          },
+        },
+      });
+      const duongVien = new GeoJSONLayer({
+        url: './CrossBuilding/Roof/duongVien.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: 'polygon-3d',
+            symbolLayers: [
+              {
+                type: 'extrude',
+                size: 0.6,
+                material: {
+                  color: 'rgba(255,255,255,1)',
+                },
+                edges: {
+                  type: 'solid', // autocasts as new SolidEdges3D()
+                  color: 'transparent',
+                },
+              },
+            ],
+
+          },
+        },
+      });
+      const hinhVuongs = new GeoJSONLayer({
+        url: './CrossBuilding/Roof/hinhVuongs.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: 'polygon-3d',
+            symbolLayers: [
+              {
+                type: 'extrude',
+                size: 0.6,
+                material: {
+                  color: 'rgba(255,255,255,1)',
+                },
+                edges: {
+                  type: 'solid', // autocasts as new SolidEdges3D()
+                  color: 'transparent',
+                },
+              },
+            ],
+
+          },
+        },
+      });
+      const roofCircle = new GeoJSONLayer({
+        url: './CrossBuilding/Roof/roofCircle.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",
+            color: "#b0b0b0",
+            outline: {
+              color: [255, 255, 255],
+              width: 0
+            }
+          },
+        },
+      });
+
+      const roof = new GeoJSONLayer({
+        url: './CrossBuilding/Roof/roof.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: 'polygon-3d',
+            symbolLayers: [
+              {
+                type: 'extrude',
+                size: 0.1,
+                material: {
+                  color: '#8B4513',
+                },
+                edges: {
+                  type: 'solid', // autocasts as new SolidEdges3D()
+                  color: 'transparent',
+                },
+              },
+            ],
+
+          },
+        },
+      });
+
+      map.layers.addMany([
+        // other
+        floor12separator,
+
+        // Columns
+        mainColumns,
+        firstFloorColumns,
+        firstFloorSlope,
+        secondFloorColumns,
+        secondFloorSlope,
+        thirdFloorColumns,
+        thirdFloorSlope,
+
+        // first floor
+        frontWall1,
+        frontWall2,
+        frontDoorWall,
+        frontDoors,
+        frontDoorCircle,
+        frontColumn,
+        frontColumnB,
+        halfCircleDoor1A,
+        halfCircleDoor1B,
+        halfCircleDoor1C,
+        halfCircleDoor1D,
+        halfCircleDoor1E,
+        halfCircleDoor2A,
+        halfCircleDoor2B,
+        halfCircleDoor2C,
+        halfCircleDoor2D,
+        halfCircleDoor2E,
+        halfCircleDoor1Front,
+        halfCircleDoor2Front,
+        roundColumn,
+        roundColumnB,
+
+        // second floor
+        secondFloorWall,
+        SecondFloorDoorColumns,
+        SecondFloorDoorColumns2,
+        bottomBar,
+        secondDoorWall,
+        vomDoorA,
+        vomDoorB,
+        vomDoorC,
+        door,
+
+        // second floor upper
+        decoration,
+        decorationVanh,
+        decorationVienNgoai,
+        decorationVienTrong,
+        decoration2,
+        decoration2up,
+        decoration2up2,
+        decoration2down,
+        innerCircle,
+
+        //roof
+        topFront,
+        duongVien,
+        hinhVuongs,
+        roofCircle,
+        roof,
+      ])
       // ======== END CROSS BUILDING =============
 
       // ======== BEHIND BUILDING =============
       // ======== END BEHIND BUILDING =============
-      
+
       view.popup.defaultPopupTemplateEnabled = true;
       view.on("click", function (event) {
-          // Listen for the click event
-          view.hitTest(event).then(function (hitTestResults) {
-            // Search for features where the user clicked
-            if (hitTestResults.results) {
-              list_points.push([
-                event.mapPoint.longitude,
-                event.mapPoint.latitude,
-              ]);
-              string_points +=
-                "[" +
-                event.mapPoint.longitude +
-                ", " +
-                event.mapPoint.latitude +
-                "],";
-              copyTextToClipboard(string_points);
-              console.log(list_points);
-              console.log(event);
-            }
-          });
+        // Listen for the click event
+        view.hitTest(event).then(function (hitTestResults) {
+          // Search for features where the user clicked
+          if (hitTestResults.results) {
+            list_points.push([
+              event.mapPoint.longitude,
+              event.mapPoint.latitude,
+            ]);
+            string_points +=
+              "[" +
+              event.mapPoint.longitude +
+              ", " +
+              event.mapPoint.latitude +
+              "],";
+            copyTextToClipboard(string_points);
+            console.log(list_points);
+            console.log(event);
+          }
         });
       });
-    </script>
-  </body>
+    });
+  </script>
+</body>
+
 </html>

@@ -1,0 +1,47 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [106.69913296691804, 10.779966726922208, 39.9],
+              [106.69922308877415, 10.779885580838487, 39.9],
+              [106.69917706633052, 10.779926052604015, 48.4]
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "Name": "Cross building top front"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [106.69891056654045, 10.77971972627955, 39.9],
+              [106.69900068839657, 10.779638580195835, 39.9],
+              [106.69895562768428, 10.779680120072245, 48.39999999999999]
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "Name": "Cross building top front"
+      }
+    }
+  ],
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  }
+}
