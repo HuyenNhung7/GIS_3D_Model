@@ -1131,12 +1131,26 @@
         },
       });
       const smallBuildingRoof = new GeoJSONLayer({
-        url: './SmallBuilding/roof.geojson',
+        url: './SmallBuilding/Roof/roof.geojson',
         renderer: {
           type: 'simple',
           symbol: {
             type: "simple-fill",
             color: [205, 102, 29, 1],
+            outline: {
+              color: [255, 255, 255],
+              width: 0
+            }
+          },
+        },
+      });
+      const smallBuildingRoofFront = new GeoJSONLayer({
+        url: './SmallBuilding/Roof/roofFront.geojson',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: "simple-fill",
+            color: [255, 127, 0, 0.9],
             outline: {
               color: [255, 255, 255],
               width: 0
@@ -1152,7 +1166,8 @@
         smallBuildingFirstFloorDoorColumn,
         smallBuildingFirstFloorWall,
         smallBuildingThirdFloorWall,
-        smallBuildingRoof
+        smallBuildingRoof,
+        smallBuildingRoofFront
       ])
       // ======== END SMALL BUILDING =============
 
